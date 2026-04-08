@@ -1,21 +1,23 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 export const runtime = "nodejs";
 export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
 
-function arrayBufferToBase64(buffer: ArrayBuffer) {
-  return Buffer.from(buffer).toString("base64");
+function bufferToBase64(buffer: Buffer) {
+  return buffer.toString("base64");
 }
 
 export default async function Icon() {
-  const logoUrl = new URL(
-    "../../public/Cafe Coffee & Eatery Logo.png",
-    import.meta.url
+  const logoPath = path.join(
+    process.cwd(),
+    "public",
+    "Cafe Coffee & Eatery Logo.png",
   );
-
-  const bytes = await fetch(logoUrl).then((r) => r.arrayBuffer());
-  const base64 = arrayBufferToBase64(bytes);
+  const bytes = await readFile(logoPath);
+  const base64 = bufferToBase64(bytes);
   const src = `data:image/png;base64,${base64}`;
 
   return new ImageResponse(
