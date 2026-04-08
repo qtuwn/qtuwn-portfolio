@@ -5,9 +5,9 @@ import { ProjectsClient } from "./projects-client";
 
 
 export const metadata: Metadata = {
-  title: "Projects",
+  title: "Dự án / Projects",
   description:
-    "Explore my portfolio of web, mobile, and desktop applications built with modern technologies.",
+    "Các dự án nổi bật (song ngữ VI/EN) về web, mobile, và hệ thống backend.",
 };
 
 export default function ProjectsPage() {

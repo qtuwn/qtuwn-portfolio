@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AboutIntro } from "./about-client";
 
 export const metadata: Metadata = {
   title: "About",
@@ -7,71 +8,145 @@ export const metadata: Metadata = {
 };
 
 const techStack = {
-  Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS", "HTML/CSS"],
-  Backend: ["Node.js", "Express", ".NET", "PHP", "REST APIs"],
-  Mobile: ["Flutter", "Dart", "React Native"],
-  Database: ["PostgreSQL", "MySQL", "MongoDB", "SQL Server", "Firebase"],
-  "DevOps & Tools": [
-    "Git",
-    "Docker",
-    "Vercel",
-    "GitHub Actions",
-    "VS Code",
-    "Linux",
+  Frontend: [
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Vite",
+    "React Router",
+    "Tailwind CSS",
+    "Framer Motion",
+    "Accessibility (a11y)",
+  ],
+  Backend: [
+    "Node.js",
+    "Express.js",
+    "PHP (MVC)",
+    "Java",
+    "Spring Boot",
+    "Spring Security (RBAC)",
+    "JWT + Refresh Token (rotate/revoke)",
+    "Socket.io",
+    "Joi Validation",
+    "Mongoose",
+    "Redis",
+    "Flyway Migrations",
+    "REST APIs",
+  ],
+  Mobile: ["Flutter", "Dart", "Riverpod"],
+  Database: ["PostgreSQL", "MongoDB", "Cloud Firestore", "Redis", "MySQL"],
+  "Testing & Quality": [
+    "Unit Tests",
+    "Integration Tests",
+    "E2E Tests",
+    "ESLint",
+    "GitHub Actions (CI/CD)",
+  ],
+  "Testing Tools": [
+    "Jest",
+    "Supertest",
+    "Spring Boot Test",
+    "Postman Collection",
+    "Selenium",
+    "Flutter integration_test",
+  ],
+  "Cloud & Deploy": ["Vercel", "Docker Compose", "Firebase", "Google Play Store"],
+  Security: [
+    "RBAC",
+    "Firebase App Check / Play Integrity",
+    "Secrets (.env + CI secrets)",
+    "Rate limiting",
+    "CORS policy",
+    "XSS awareness",
   ],
 };
 
+const skills = {
+  "Tools & Code Management": [
+    "Git/GitHub",
+    "Docker",
+    "VS Code",
+    "Cursor",
+    "GitHub Actions",
+    "Jira",
+    "Figma",
+    "Gemini API",
+    "OpenAI API",
+    "GitHub Copilot",
+  ],
+  "Deployment & Integration": ["Vercel", "Socket.io", "Google OAuth", "LLM"],
+  "System Design & Modeling": [
+    "Use Case",
+    "Class Diagram",
+    "Sequence Diagram (UML)",
+    "draw.io",
+  ],
+  "Soft Skills": [
+    "Teamwork",
+    "Problem-solving",
+    "Fast Learner",
+    "Technical Communication",
+  ],
+  Language: ["English: CEFR B1 (improving toward B2)"],
+};
+
 export default function AboutPage() {
+  // Headings are derived in client intro to avoid duplicating language state on server.
+  // Default server render keeps stable markup; labels below are bilingual.
+
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-3xl px-6 py-16">
         <header className="mb-12">
-          <h1 className="text-4xl font-bold tracking-tight">About Me</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Giới thiệu / About</h1>
         </header>
 
-        <section className="prose-custom">
-          <p className="text-lg leading-relaxed text-foreground/80">
-            Hi! I&apos;m <strong>Tuan</strong>, also known as{" "}
-            <strong>qtuwn</strong> online. I&apos;m a developer with a passion
-            for building applications across multiple platforms—from web and
-            mobile to desktop.
-          </p>
-
-          <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-            My journey in software development has led me through various
-            technologies: crafting responsive web applications with{" "}
-            <strong>React</strong> and <strong>Next.js</strong>, building mobile
-            experiences with <strong>Flutter</strong>, and developing robust
-            desktop applications with <strong>.NET</strong>.
-          </p>
-
-          <p className="mt-4 text-lg leading-relaxed text-foreground/80">
-            I enjoy the challenge of learning new technologies and applying them
-            to solve real-world problems. Whether it&apos;s setting up CI/CD
-            pipelines, optimizing database queries, or designing intuitive user
-            interfaces, I&apos;m always eager to expand my skill set.
-          </p>
-        </section>
+        <AboutIntro />
 
         <section className="mt-16">
-          <h2 className="text-2xl font-semibold mb-8">Tech Stack</h2>
+          <h2 className="text-2xl font-semibold mb-8">
+            Công nghệ / Tech Stack
+          </h2>
 
           <div className="grid gap-6 sm:grid-cols-2">
             {Object.entries(techStack).map(([category, technologies]) => (
               <div
                 key={category}
-                className="rounded-xl border border-foreground/10 p-5"
+                className="rounded-xl border border-border bg-card p-5"
               >
-                <h3 className="font-semibold text-foreground/90 mb-3">
-                  {category}
-                </h3>
+                <h3 className="font-semibold text-foreground mb-3">{category}</h3>
                 <div className="flex flex-wrap gap-2">
                   {technologies.map((tech) => (
                     <span
                       key={tech}
-                      className="rounded-full bg-foreground/5 px-3 py-1 text-sm text-foreground/70"
+                      className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
                     >
                       {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-16">
+          <h2 className="text-2xl font-semibold mb-8">Kỹ năng / Skills</h2>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {Object.entries(skills).map(([category, items]) => (
+              <div
+                key={category}
+                className="rounded-xl border border-border bg-card p-5"
+              >
+                <h3 className="font-semibold text-foreground mb-3">{category}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {items.map((item) => (
+                    <span
+                      key={item}
+                      className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground"
+                    >
+                      {item}
                     </span>
                   ))}
                 </div>

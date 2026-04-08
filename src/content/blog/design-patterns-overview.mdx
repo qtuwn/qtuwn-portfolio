@@ -1,0 +1,106 @@
+---
+title: "Design Patterns là gì? Vì sao là “trợ thủ” của Developer (tổng hợp 23 mẫu GoF)"
+date: "2026-04-08"
+tags: ["design-patterns", "oop", "architecture", "clean-code"]
+summary: "Design Pattern là các mẫu giải pháp tái sử dụng cho vấn đề thiết kế thường gặp. Bài này giải thích dễ hiểu, khi nào nên dùng/không nên dùng, và tổng hợp 23 pattern GoF theo 3 nhóm."
+---
+
+# Design Patterns là gì?
+
+**Design Pattern** (mẫu thiết kế) là **một giải pháp tổng quát** đã được kiểm chứng để giải quyết các vấn đề phổ biến trong thiết kế phần mềm (đặc biệt trong OOP).  
+Nó **không phải framework** và **không phụ thuộc ngôn ngữ**—bạn có thể áp dụng trong Java, C#, TypeScript/JavaScript, Dart… miễn là bạn hiểu bản chất.
+
+Nếu SOLID giúp bạn có “nguyên lý” để viết code bền, thì Design Patterns là “bộ công cụ” để **đóng gói những cách giải quyết** đã thành chuẩn.
+
+---
+
+## Vì sao Design Patterns giúp dev “làm việc nhanh và chắc” hơn?
+
+- **Tăng tốc phát triển**: gặp bài toán quen thuộc (tạo object, bọc hành vi, giao tiếp giữa module…) bạn có “mẫu” để triển khai.
+- **Giao tiếp trong team dễ hơn**: nói “Strategy”, “Factory”, “Observer” là team hình dung được cấu trúc.
+- **Tái sử dụng & mở rộng**: thay vì sửa tung, bạn mở rộng theo đúng điểm thay đổi.
+- **Giảm lỗi tiềm ẩn**: pattern thường hướng tới giảm coupling, tăng testability.
+
+---
+
+## Khi nào không nên “spam pattern”?
+
+Pattern **không phải mục tiêu**, nó là **phương tiện**.
+
+- Khi hệ thống nhỏ, yêu cầu đơn giản → pattern có thể làm code **phức tạp không cần thiết**.
+- Khi bạn dùng pattern vì “nghe ngầu” → dễ tạo **over-engineering**.
+
+Nguyên tắc mình hay dùng:  
+**Bắt đầu đơn giản**, khi thấy “mùi” (switch-case phình, class quá nhiều trách nhiệm, khó test…) thì mới áp dụng pattern phù hợp.
+
+---
+
+## 23 mẫu Design Pattern (GoF) — chia 3 nhóm
+
+Hệ thống 23 mẫu “kinh điển” thường được nhắc tới từ cuốn *Design Patterns: Elements of Reusable Object-Oriented Software* (Gang of Four).
+
+### 1) Creational (Khởi tạo) — 5 mẫu
+
+Tập trung vào **cách tạo object** linh hoạt, giảm phụ thuộc vào `new`.
+
+- **Singleton**
+- **Factory Method**
+- **Abstract Factory**
+- **Builder**
+- **Prototype**
+
+### 2) Structural (Cấu trúc) — 7 mẫu
+
+Tập trung vào **cách ghép/bọc đối tượng**, tổ chức quan hệ giữa các thành phần.
+
+- **Adapter**
+- **Bridge**
+- **Composite**
+- **Decorator**
+- **Facade**
+- **Flyweight**
+- **Proxy**
+
+### 3) Behavioral (Hành vi) — 11 mẫu
+
+Tập trung vào **cách các object giao tiếp** và phối hợp hành vi.
+
+- **Interpreter**
+- **Template Method**
+- **Chain of Responsibility**
+- **Command**
+- **Iterator**
+- **Mediator**
+- **Memento**
+- **Observer**
+- **State**
+- **Strategy**
+- **Visitor**
+
+---
+
+## Quick map: bài toán → pattern hay gặp
+
+- **Nhiều “cách làm” cho cùng một tác vụ (discount, payment, rule, sorting…)** → `Strategy`
+- **Thay đổi hành vi bằng cách bọc (logging, retry, caching, permission…)** → `Decorator`
+- **Ẩn độ phức tạp của subsystem** → `Facade`
+- **Tạo object theo “family” (UI components, providers theo env)** → `Abstract Factory`
+- **Pipeline xử lý request (middleware)** → `Chain of Responsibility`
+- **Event/realtime/update** → `Observer` (và thực tế hay đi với Pub/Sub)
+
+---
+
+## Gợi ý lộ trình học (không bị ngợp)
+
+1) Học 6 mẫu “dùng nhiều nhất” trước: **Factory, Builder, Strategy, Observer, Decorator, Facade**  
+2) Học cách nhận “mùi code” (code smell) → chọn pattern phù hợp  
+3) Thử áp dụng vào project thật (nhỏ thôi) → viết test → refactor
+
+---
+
+## Tài liệu tham khảo
+
+- Refactoring.Guru — Design Patterns: `https://refactoring.guru/design-patterns`
+- *Head First Design Patterns*
+- *Design Patterns: Elements of Reusable Object-Oriented Software* (GoF)
+

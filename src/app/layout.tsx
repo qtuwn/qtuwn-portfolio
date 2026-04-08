@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Anton, Geist, Geist_Mono, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Navbar } from "@/components/site/Navbar";
@@ -16,6 +16,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const display = Anton({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const mono = Space_Mono({
+  variable: "--font-mono-alt",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -23,6 +35,11 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  icons: {
+    icon: "/Cafe%20Coffee%20%26%20Eatery%20Logo.png",
+    shortcut: "/Cafe%20Coffee%20%26%20Eatery%20Logo.png",
+    apple: "/Cafe%20Coffee%20%26%20Eatery%20Logo.png",
+  },
   authors: [{ name: siteConfig.author }],
   creator: siteConfig.author,
   openGraph: {
@@ -59,7 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${display.variable} ${mono.variable} antialiased`}
       >
         <Providers>
           <div className="flex min-h-screen flex-col">

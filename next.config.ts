@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  async rewrites() {
+    return [
+      {
+        source: "/favicon.ico",
+        destination: "/Cafe%20Coffee%20%26%20Eatery%20Logo.png",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

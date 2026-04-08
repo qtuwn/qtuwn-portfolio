@@ -1,0 +1,150 @@
+---
+title: "SOLID là gì? Áp dụng 5 nguyên lý để code “cứng” hơn"
+date: "2026-04-08"
+tags: ["solid", "oop", "clean-code", "architecture"]
+summary: "SOLID là 5 nguyên lý thiết kế OOP giúp code dễ đọc, dễ test, dễ mở rộng và dễ maintain. Bài này tóm tắt dễ hiểu + ví dụ ngắn để áp dụng ngay."
+---
+
+# SOLID là gì?
+
+Nếu bạn từng **ngại sửa code cũ** vì “đụng chỗ này hỏng chỗ kia”, thì SOLID là một bộ nguyên lý giúp bạn thiết kế code **ít rủi ro hơn khi thay đổi**.
+
+SOLID gồm 5 chữ cái:
+
+- **S**: Single Responsibility Principle
+- **O**: Open/Closed Principle
+- **L**: Liskov Substitution Principle
+- **I**: Interface Segregation Principle
+- **D**: Dependency Inversion Principle
+
+Mục tiêu chung: **giảm coupling, tăng cohesion**, để code **dễ đọc – dễ test – dễ mở rộng – dễ bảo trì**.
+
+---
+
+## S — Single Responsibility Principle (SRP)
+
+> Một module/class chỉ nên có **1 lý do để thay đổi**.
+
+### Dấu hiệu vi phạm SRP
+
+- Một class vừa xử lý business logic, vừa gọi DB, vừa format output.
+- Một file “manager/service” phình to, sửa gì cũng phải mở nó.
+
+### Gợi ý áp dụng
+
+- Tách theo vai trò: **Controller** (I/O) – **Service/Use case** (business) – **Repository** (data).
+- Đặt câu hỏi: “Nếu yêu cầu A thay đổi, mình có phải sửa chung với yêu cầu B không?”
+
+---
+
+## O — Open/Closed Principle (OCP)
+
+> **Mở rộng được** nhưng **không sửa code cũ** (open for extension, closed for modification).
+
+### Ví dụ nhanh (TypeScript)
+
+Thay vì `switch-case` theo loại discount, ta dùng strategy:
+
+```typescript
+type Money = number;
+
+interface DiscountStrategy {
+  apply(total: Money): Money;
+}
+
+class NoDiscount implements DiscountStrategy {
+  apply(total: Money) {
+    return total;
+  }
+}
+
+class PercentDiscount implements DiscountStrategy {
+  constructor(private percent: number) {}
+  apply(total: Money) {
+    return total * (1 - this.percent);
+  }
+}
+
+function checkout(total: Money, strategy: DiscountStrategy) {
+  return strategy.apply(total);
+}
+```
+
+Khi thêm discount mới, bạn **thêm class mới**, không cần sửa `checkout`.
+
+---
+
+## L — Liskov Substitution Principle (LSP)
+
+> Object của lớp con phải thay thế được lớp cha mà **không làm sai hành vi**.
+
+### Dấu hiệu vi phạm LSP
+
+- Override method nhưng thay đổi ý nghĩa (ví dụ: method “save” ở subclass lại “throw error”).
+- Subclass yêu cầu điều kiện mạnh hơn superclass (precondition chặt hơn).
+
+### Gợi ý áp dụng
+
+- Nếu subclass “khác bản chất”, đừng kế thừa. Dùng **composition** (has-a) thay vì inheritance (is-a).
+- Viết test theo contract: “Nếu thay implementation, hệ thống vẫn chạy đúng?”
+
+---
+
+## I — Interface Segregation Principle (ISP)
+
+> **Nhiều interface nhỏ** tốt hơn **một interface khổng lồ**.
+
+### Dấu hiệu vi phạm ISP
+
+- Một interface 20–50 hàm, implement class nào cũng phải “stub” nhiều hàm không dùng.
+
+### Gợi ý áp dụng
+
+- Tách interface theo nhóm hành vi:
+  - `ReadableRepository`
+  - `WritableRepository`
+  - `SearchableRepository`
+
+---
+
+## D — Dependency Inversion Principle (DIP)
+
+> Module cấp cao không phụ thuộc module cấp thấp. Cả hai phụ thuộc vào **abstraction**.
+
+### Ví dụ nhanh (Node/TS pseudo)
+
+```typescript
+interface UserRepository {
+  findByEmail(email: string): Promise<{ id: string; email: string } | null>;
+}
+
+class AuthService {
+  constructor(private users: UserRepository) {}
+
+  async login(email: string) {
+    const user = await this.users.findByEmail(email);
+    if (!user) throw new Error("User not found");
+    return user;
+  }
+}
+```
+
+`AuthService` không cần biết DB là Mongo/Postgres, chỉ cần `UserRepository`.
+
+---
+
+## Checklist áp dụng SOLID (thực tế, nhanh)
+
+- **SRP**: mỗi file/class có tên cụ thể và “lý do thay đổi” rõ ràng.
+- **OCP**: tránh `switch-case` theo type/role/feature → dùng strategy/polymorphism/config.
+- **LSP**: hạn chế inheritance; ưu tiên composition; test theo contract.
+- **ISP**: interface nhỏ theo hành vi; tránh “god interface”.
+- **DIP**: inject dependency qua constructor; module core phụ thuộc vào interface.
+
+---
+
+## Kết
+
+SOLID không phải “luật cứng”, mà là **kim chỉ nam** để bạn viết code bền hơn theo thời gian.
+Nếu bạn muốn, mình có thể viết tiếp phần “SOLID trong dự án thực tế” (ví dụ: áp dụng vào `ERP_HRM` / `METRO_MANAGEMENT` / `Calories-Tracking`).
+

@@ -1,14 +1,23 @@
+"use client";
+
 import { Github, Mail } from "lucide-react";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { lang } = useLanguage();
+
+  const copyright =
+    lang === "vi"
+      ? `© ${currentYear} Tuan (qtuwn). Bảo lưu mọi quyền.`
+      : `© ${currentYear} Tuan (qtuwn). All rights reserved.`;
 
   return (
     <footer className="border-t border-foreground/10 bg-background">
       <div className="mx-auto max-w-5xl px-6 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-foreground/60">
-            © {currentYear} Tuan (qtuwn). All rights reserved.
+            {copyright}
           </p>
 
           <div className="flex items-center gap-4">
