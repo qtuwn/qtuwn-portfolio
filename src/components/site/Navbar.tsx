@@ -37,7 +37,6 @@ export function Navbar() {
 
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const glassTabsRef = useRef<HTMLUListElement>(null);
 
   // Close menu on click outside
   useEffect(() => {
@@ -70,50 +69,6 @@ export function Navbar() {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [menuOpen]);
 
-  // Micro-parallax for liquid glass tabs
-  useEffect(() => {
-    const el = glassTabsRef.current;
-    if (!el) return;
-
-    let raf = 0;
-
-    function setVars(clientX: number, clientY: number) {
-      const node = glassTabsRef.current;
-      if (!node) return;
-
-      const rect = node.getBoundingClientRect();
-      const x = (clientX - rect.left) / Math.max(1, rect.width);
-      const y = (clientY - rect.top) / Math.max(1, rect.height);
-
-      const cx = Math.min(1, Math.max(0, x));
-      const cy = Math.min(1, Math.max(0, y));
-
-      node.style.setProperty("--mx", cx.toFixed(4));
-      node.style.setProperty("--my", cy.toFixed(4));
-    }
-
-    function onPointerMove(ev: PointerEvent) {
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setVars(ev.clientX, ev.clientY));
-    }
-
-    function onPointerLeave() {
-      const node = glassTabsRef.current;
-      if (!node) return;
-      node.style.removeProperty("--mx");
-      node.style.removeProperty("--my");
-    }
-
-    el.addEventListener("pointermove", onPointerMove);
-    el.addEventListener("pointerleave", onPointerLeave);
-
-    return () => {
-      if (raf) cancelAnimationFrame(raf);
-      el.removeEventListener("pointermove", onPointerMove);
-      el.removeEventListener("pointerleave", onPointerLeave);
-    };
-  }, []);
-
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/55">
       <nav
@@ -140,10 +95,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <ul
-          ref={glassTabsRef}
-          className="hidden sm:flex items-center gap-1 rounded-full border border-white/10 bg-background/35 px-1 py-1 shadow-[0_10px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl ring-1 ring-inset ring-white/10 glass-tabs"
-        >
+        <ul className="hidden sm:flex items-center gap-6">
           {navLinks.map(({ href, labelKey }) => {
             const isActive =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -152,13 +104,18 @@ export function Navbar() {
               <li key={href}>
                 <Link
                   href={href}
-                  className={`relative rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                  className={`relative py-2 text-sm font-medium transition-colors ${
                     isActive
-                      ? "bg-white/55 text-foreground shadow-[0_8px_18px_rgba(0,0,0,0.16)] ring-1 ring-inset ring-white/40 dark:bg-white/10 dark:text-foreground dark:ring-white/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-white/20 dark:hover:bg-white/5"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <span aria-hidden="true" className="glass-tab-sheen" />
+                  {isActive && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute -left-3 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent"
+                    />
+                  )}
                   {t[labelKey]}
                 </Link>
               </li>

@@ -8,22 +8,40 @@ import {
   fadeInUp,
 } from "@/components/motion/Motion";
 import type { Project } from "@/data/projects";
+import Link from "next/link";
+import Image from "next/image";
+import { projectImages } from "@/lib/project-images";
+import { useLanguage } from "@/components/i18n/LanguageProvider";
 
 interface ProjectsClientProps {
   projects: Project[];
 }
 
 export function ProjectsClient({ projects }: ProjectsClientProps) {
+  const { lang } = useLanguage();
+
+  const t = {
+    title: lang === "vi" ? "Dự án" : "Projects",
+    subtitle:
+      lang === "vi"
+        ? "Tổng hợp các dự án mình đã xây dựng, từ mobile app đến hệ thống web."
+        : "A curated list of projects I've built, from mobile apps to web systems.",
+    featured: lang === "vi" ? "Nổi bật" : "Featured",
+    source: lang === "vi" ? "Mã nguồn" : "Source",
+    demo: lang === "vi" ? "Demo" : "Demo",
+    caseStudy: lang === "vi" ? "Case study" : "Case study",
+    ariaSource: lang === "vi" ? "Xem mã nguồn" : "View source code",
+    ariaDemo: lang === "vi" ? "Xem demo" : "View demo",
+    ariaCaseStudy: lang === "vi" ? "Xem case study" : "View case study",
+  } as const;
+
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-5xl px-6 py-16">
         <MotionDiv>
           <header className="mb-12">
-            <h1 className="text-4xl font-bold tracking-tight">Projects</h1>
-            <p className="mt-4 text-lg text-foreground/70">
-              A collection of projects I&apos;ve built, from mobile apps to web
-              platforms.
-            </p>
+            <h1 className="text-4xl font-bold tracking-tight">{t.title}</h1>
+            <p className="mt-4 text-lg text-muted-foreground">{t.subtitle}</p>
           </header>
         </MotionDiv>
 
@@ -32,77 +50,127 @@ export function ProjectsClient({ projects }: ProjectsClientProps) {
             <MotionArticle
               key={project.title}
               variants={fadeInUp}
-              className="group relative rounded-xl border border-foreground/10 p-6 transition-all hover:border-foreground/20 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br from-transparent to-foreground/[0.01] overflow-hidden"
+              className="group relative rounded-xl border border-border bg-card p-6 transition-all hover:shadow-lg hover:-translate-y-1 overflow-hidden"
             >
-              {/* Featured badge for first project */}
               {index === 0 && (
-                <div className="absolute top-4 right-4 flex items-center gap-1 rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-500">
+                <div className="absolute top-4 right-4 flex items-center gap-1 rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent">
                   <Sparkles className="h-3 w-3" />
-                  Featured
+                  {t.featured}
                 </div>
               )}
 
-              <h2 className="text-xl font-semibold group-hover:text-blue-500 transition-colors pr-20">
+              <h2 className="text-xl font-semibold group-hover:text-accent transition-colors pr-20">
                 {project.title}
               </h2>
-              <p className="mt-2 text-foreground/70 text-sm leading-relaxed">
-                {project.description}
-              </p>
+
+              {project.screenshots?.[0] && (
+                <div className="mt-4 overflow-hidden rounded-lg border border-border bg-muted">
+                  <Image
+                    src={projectImages[project.screenshots[0].key]}
+                    alt={project.screenshots[0].alt}
+                    className="h-72 w-full object-cover object-top"
+                    placeholder="blur"
+                  />
+                </div>
+              )}
+
+              {project.screenshots && project.screenshots.length > 1 && (
+                <div className="mt-3 flex gap-2 overflow-x-auto">
+                  {project.screenshots.slice(1, 4).map((s) => (
+                    <div
+                      key={s.key}
+                      className="shrink-0 overflow-hidden rounded-md border border-border bg-muted"
+                    >
+                      <Image
+                        src={projectImages[s.key]}
+                        alt={s.alt}
+                        className="h-16 w-28 object-cover object-top"
+                        placeholder="blur"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-2 space-y-1">
+                <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
+                  {lang === "vi" ? project.descriptionVi : project.descriptionEn}
+                </p>
+              </div>
 
               <div className="mt-4 flex flex-wrap gap-2">
-                {project.tech.map((tech) => (
+                {project.tech.slice(0, 8).map((tech) => (
                   <span
                     key={tech}
-                    className="rounded-full bg-foreground/5 px-3 py-1 text-xs font-medium text-foreground/70 transition-colors group-hover:bg-foreground/10"
+                    className="rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground transition-colors group-hover:text-foreground"
                   >
                     {tech}
                   </span>
                 ))}
+                {project.tech.length > 8 && (
+                  <span className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+                    +{project.tech.length - 8}
+                  </span>
+                )}
               </div>
 
-              {project.highlights && (
+              {(project.highlightsVi || project.highlightsEn) && (
                 <ul className="mt-4 space-y-1.5">
-                  {project.highlights.map((highlight, i) => (
-                    <li
-                      key={i}
-                      className="text-sm text-foreground/60 flex items-start gap-2"
-                    >
-                      <span className="text-blue-500 mt-0.5 shrink-0">•</span>
-                      <span>{highlight}</span>
-                    </li>
-                  ))}
+                  {(lang === "vi"
+                    ? project.highlightsVi ?? []
+                    : project.highlightsEn ?? []
+                  )
+                    .slice(0, 3)
+                    .map((highlight, i) => (
+                      <li
+                        key={i}
+                        className="text-sm text-muted-foreground flex items-start gap-2"
+                      >
+                        <span className="text-accent mt-0.5 shrink-0">•</span>
+                        <span className="line-clamp-2">{highlight}</span>
+                      </li>
+                    ))}
                 </ul>
               )}
 
-              <div className="mt-6 flex gap-3">
+              <div className="mt-6 flex flex-wrap gap-3">
                 {project.repoUrl && (
                   <a
                     href={project.repoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-foreground/10 bg-foreground/5 px-4 py-2 text-sm font-medium transition-all hover:bg-foreground/10 hover:border-foreground/20 focus:outline-none focus:ring-2 focus:ring-foreground/20"
-                    aria-label={`View ${project.title} source code on GitHub`}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted px-4 py-2 text-sm font-medium transition-colors hover:bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                    aria-label={`${t.ariaSource} ${project.title} (GitHub)`}
                   >
                     <Github className="h-4 w-4" />
-                    Source
+                    {t.source}
                   </a>
                 )}
-                {project.liveUrl && (
+                {(project.storeUrl || project.demoUrl || project.videoUrl) && (
                   <a
-                    href={project.liveUrl}
+                    href={project.storeUrl ?? project.demoUrl ?? project.videoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                    aria-label={`View ${project.title} live demo`}
+                    className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring"
+                    aria-label={`${t.ariaDemo} ${project.title}`}
                   >
                     <ExternalLink className="h-4 w-4" />
-                    Live Demo
+                    {t.demo}
                   </a>
+                )}
+                {project.caseStudyUrl && (
+                  <Link
+                    href={project.caseStudyUrl}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring"
+                    aria-label={`${t.ariaCaseStudy} ${project.title}`}
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    {t.caseStudy}
+                  </Link>
                 )}
               </div>
 
-              {/* Subtle gradient hover effect */}
-              <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity group-hover:opacity-100 ring-1 ring-inset ring-accent/10" />
             </MotionArticle>
           ))}
         </MotionList>
